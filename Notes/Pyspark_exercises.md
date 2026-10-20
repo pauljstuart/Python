@@ -2,9 +2,9 @@
 
 
 
-## Exercise 1
 
-For example, suppose the interviewer gives you the following dataset:
+
+###  PySpark — Average salary by department
 
 
 
@@ -22,14 +22,39 @@ employees
 | David   | HR         | 55,000 |
 | Eve     | IT         | 80,000 |
 
-They ask:
-
 
 
 Here's the solution:
 
 ```
-from pyspark.sql.functions import avg, colresult = (    df.groupBy("department")      .agg(avg("salary").alias("avg_salary"))      .orderBy(col("avg_salary").desc()))result.show()
+data = [
+    ("Alice", "IT", 60000),
+    ("Bob", "HR", 45000),
+    ("Charlie", "IT", 75000),
+    ("David", "HR", 55000),
+    ("Eve", "IT", 80000)
+]
+
+df = spark.createDataFrame(
+    data, schema=["name", "dept", "salary"]
+)
+
+df.display()
+
+
+from pyspark.sql.functions import avg, col
+
+
+result = (
+    df.groupBy("dept").agg(
+        avg("salary").alias("avg_salary")
+    )
+)
+
+# .orderBy(col("avg_salary").desc())
+
+result = result.orderBy(col("avg_salary").desc())
+result.show()
 ```
 
 Expected result:
@@ -45,9 +70,7 @@ This one exercise uses three critical operations:
 
 
 
-## Exercise 2
-
-
+### Python — Add the first 5 elements from two lists
 
 
 
@@ -55,425 +78,325 @@ Question:
 
 You have two lists stored in variables `First` and `Last`. The length of the first list is five whereas the length of the second list is six. How can you add the first five elements from each list?
 
-Given code:
+
 
 ```
+# add the first 5 elements from each list
+
 First = [8, 5, 7, 8, 2]
 Last = [77, 41, 22, 65, 7, 5]
-# Output# [85, 46, 29, 73, 9]
-```
 
-### Answer options
+result = zip(First, Last)
 
-A.
+print(list(result))
 
-```
-[i = First[i] + j = Last[j] for i, j in map(First, Last)]
-```
+result = [i + j for i, j in zip(First, Last)]
 
-B. ✅ Correct answer
-
-```
-[i + j for i, j in zip(First, Last)]
+print(result)
 ```
 
 
 
 
 
- 
 
-### Fizz Buzz
 
- 
 
-\# # Complete the 'fizzBuzz' function below. # 
 
-\# The function accepts INTEGER n as parameter. 
 
- 
-
-\# def fizzBuzz(n): # Write your code here 
-
-  range_list = range(1,n+1) 
-
-  for n in range_list: 
-
-​    output = "" 
-
-​    if n%3 == 0: 
-
-​      output = "Fizz" 
-
-​    if n % 5 == 0: 
-
-​      output += "Buzz" 
-
-​    if output == "": 
-
-​      print( n ) 
-
-​    else: 
-
-​      print( output ) 
-
- 
-
-if __name__ == '__main__':
-
- 
-
- 
-
- 
-
- 
-
-and list comprehension 
-
- 
-
- 
-
-def fizzBuzz(n):
-
-  results = [
-
-​    ("Fizz" * (i % 3 == 0) + "Buzz" * (i % 5 == 0)) or str(i)
-
-​    for i in range(1, n+1)
-
-  ]
-
-  print("\n".join(results))
-
- 
-
- 
-
-### The “Maximum Subarray Sum” challenge
-
- 
-
-On HackerRank it usually appears under “Algorithms → Dynamic Programming” (sometimes in the warmup/interview prep kit).
-
- 
-
-It’s the one solved with Kadane’s Algorithm.
-
- 
-
-🔹 Problem (typical wording)
-
- 
-
-Given an integer array, find the maximum possible sum of a contiguous subarray.
-
- 
-
-Input: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-
-Output: 6
-
- 
-
-Kadane's Algorithm
-
- 
-
- 
-
-def max_subarray_sum(arr):
-
-  current_sum = max_sum = arr[0]
-
-  for x in arr[1:]:
-
-​    \# Either extend the current subarray OR start fresh from x
-
-​    current_sum = max(x, current_sum + x)
-
-​    \# Track global maximum
-
-​    max_sum = max(max_sum, current_sum)
-
-  return max_sum
-
- 
-
- 
-
- 
-
- 
 
 ### bigocheatsheet.com
 
  
 
- 
+
 
  
 
- 
-
-### Prime Numbers
+### Python — Find all prime numbers up to 100
 
  
 
-Find all prime numbers up to 100
+ ````
+ # Find all prime numbers up to 100
+ 
+ def isPrime(X):
+     if X == 0:
+         return False
+     if X == 1:
+         return False
+ 
+     for I in range(2, X):
+         if (X % I) == 0:
+             return False
+     return True
+ 
+ 
+ # print(isPrime(5))
+ 
+ primes_list = [i for i in range(1, 100) if isPrime(i) == True]
+ 
+ print(primes_list)
+ ````
+
+
 
  
 
- 
-
-### Fibonacci
+### Python — Fibonacci sequence (two approaches)
 
  
 
- 
+ Part A: Fibonacci using a list and a `while` loop
 
-First Fibonacci :
-
- 
+````
+# First Fibonacci :
 
 def fibonacci(N):
+    """Return all fibonacci numbers up to N. """
 
-  """Return all fibonacci numbers up to N. """
+    result = [0]
+    next_n = 1
 
-  result = [0]
+    while next_n <= N:
+        result.append(next_n)
+        next_n = sum(result[-2:])
 
-  next_n = 1
+    return result
 
-  while next_n <= N:
 
-​    result.append(next_n)
+# print(fibonacci(0)) # [0]
 
-​    next_n = sum(result[-2:])
+# print(fibonacci(1)) # [0, 1, 1]
 
-  return result
+# print(fibonacci(50)) # [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+````
 
- 
 
- 
 
-print(fibonacci(0))  # [0]
+Part B: Fibonacci using a generator (yield)
 
-print(fibonacci(1))  # [0, 1, 1]
+  ````
+  
+  # Second Fibonacci with Generator
+  
+  def fibonacci(N):
+      """Return all fibonacci numbers up to N. """
+  
+      yield 0
+  
+      if N == 0:
+          return
+  
+      a = 0
+      b = 1
+  
+      while b <= N:
+          yield b
+          a, b = b, a + b
+  
+  
+  # old_a = a
+  # a = b
+  # b = old_a + b
+  
+  
+  # print(list(fibonacci(1)))
+  # [0, 1, 1]
+  
+  # print(list(fibonacci(50)))
+  #
+  # [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+  
+  
+  print(list(fibonacci(50)))
+  ````
 
-print(fibonacci(50)) # [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
 
- 
-
- 
-
-Second Fibonacci with Generator
-
- 
-
-def fibonacci(N):
-
-  """Return all fibonacci numbers up to N. """
-
-  yield 0
-
-  if N == 0:
-
-​    return
-
-  a = 0
-
-  b = 1
-
-  while b <= N:
-
-​    yield b
-
-​    a, b = b, a + b
-
- 
-
- 
-
-print(list(fibonacci(0)))  # [0]
-
-print(list(fibonacci(1)))  # [0, 1, 1]
-
-print(list(fibonacci(50))) # [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
 
  
 
- 
-
-Third Fibonacci
+### Python — Sentiment Analysis Using TF-IDF and Logistic Regression
 
  
 
-def fibonacci():
+This code uses Scikit-learn to train a simple machine learning model that classifies movie reviews as Positive or Negative
 
-  a, b = 0, 1
+````
 
-  while True:
 
-​    yield a
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
 
-​    a, b = b, a + b
-
- 
-
-### ML Task #3 
-
- 
-
-\# 1 = Positive (Good), 0 = Negative (Bad) 
-
- 
-
-texts = [ 
-
-"this is a good movie", # positive
-
-"this is a bad movie", # Negative 
-
-"I love this movie", # Positive 
-
-"I do not like this movie" # Negative 
-
-] 
-
- 
-
- 
-
-new_reviews = [ 
-
-"I really enjoyed this movie", # Expected Positive 
-
-"This movie was not great" # Expected Negative 
-
-] 
-
- 
-
-for review, sentiment in zip(new_reviews, predictions): 
-
- 
-
-sentiment_label = "Good Review" if sentiment == 1 else "Bad Review"
-
- 
-
-### Task #1
-
- 
-
- 
-
-if __name__ == "__main__":
-
-  document = [ "the cat in the hat!", 
-
- "the quick, brown fox.", 
-
- "jumped over the lazy dog?",
-
- "the dog sat in the hat." 
-
- ]
-
-  print("Task 1 Output:", word_frequency(document) 
-
- 
-
- 
-
- 
-
-Flatten into list of words, and get rid of characters
-
- 
-
-1. Using list comprehension
-
- 
-
-import re
-
- 
-
-document = [
-
-  "the cat in the hat!",
-
-  "the quick, brown fox.",
-
-  "jumped over the lazy dog?",
-
-  "the dog sat in the hat."
-
+texts = [
+    "this is a good movie",
+    "this is a bad movie",
+    "I love this movie",
+    "I do not like this movie",
 ]
 
+labels = ["Positive", "Negative", "Positive", "Negative"]
+
+new_reviews = [
+    "I really enjoyed this movie",
+    "This movie was not great",
+]
+
+model = make_pipeline(
+    TfidfVectorizer(),
+    LogisticRegression()
+)
+
+model.fit(texts, labels)
+
+predictions = model.predict(new_reviews)
+print(predictions)
+````
+
+
+
+
+
+
+
  
 
-\# Flatten into words, strip punctuation, lowercase
+### Python - Count Occurrences and word frequencies
 
-words = [re.sub(r'\W+', '', w).lower()
+  
 
-​     for line in document
+Part A : Count occurrences of elements in a list
 
-​     for w in line.split()]
+
+
+ ````
+ item_list = ["a", "b", "a", "c", "b", "a"]
+ 
+ # or
+ 
+ item_list = [1, 2, 2, 3, 1, 1]
+ 
+ 
+ freq = {}
+ 
+ for value in item_list:
+     freq[value] = freq.get(value, 0) + 1
+ 
+ 
+ print(freq)
+ ````
+
+
+
+🔹 Why .get() is handy
+
+Without .get(), you’d have to check manually:
+
+if x in freq:
+
+  freq[x] += 1
+
+else:
+
+  freq[x] = 1
+
+.get(x, 0) lets you do this in one line.
 
  
+
+Part B : Flatten text into words and count frequencies
+
+````
+# Flatten into list of words, and get rid of characters, Using list comprehension
+
+document = [
+    "the cat in the hat",
+    "the quick, brown fox.",
+    "jumped over the lazy dog?",
+    "the dog sat in the hat."
+]
+
+# Flatten into words, strip punctuation, lowercase
+
+words = [
+    w.strip("!,.?").lower()
+    for line in document
+    for w in line.split()
+]
 
 print(words)
 
-\# ['the', 'cat', 'in', 'the', 'hat', 'the', 'quick', 'brown', 'fox', 'jumped', ...]
+
+# Find the frequency of each word, using a comprehension
+
+freq_dict = {}
+freq_dict = {w: words.count(w) for w in set(words)}
+
+print(freq_dict)
+````
+
+
 
  
 
-2. Using map and split
+### De-duplicating a List (remove duplicates)
 
  
 
-import re
+1) Fast, order preserving
 
  
 
-\# map(str.split, document) gives a list of lists of words
+seen = set()
 
-\# then flatten with a comprehension
+unique = []
 
-words = [re.sub(r'\W+', '', w).lower()
+for x in items:
 
-​     for line in map(str.split, document)
+  if x not in seen:
 
-​     for w in line]
+​    seen.add(x)
 
- 
-
-print(words)
+​    unique.append(x)
 
  
 
- 
-
-Next step: frequency with comprehension + count
+  Use when: you must keep first occurrence order.
 
  
 
-You mentioned you wanted to try without a dictionary. Once you’ve got words, you could do:
+  Works for: hashable elements (str, int, tuple, etc.).
 
  
 
-freq = {w: words.count(w) for w in set(words)}
-
-print(freq)
+  Time: O(n)
 
  
 
+One-liner (readable)
+
  
 
-### Task #2
+def dedupe_keep_order(items):
+
+  seen = set()
+
+  return [x for x in items if not (x in seen or seen.add(x))]
+
+ 
+
+2) Fast, order not preserved
+
+ 
+
+unique = list(set(items))
+
+
+
+
+
+### Cleaning Data
 
  
 
@@ -567,184 +490,97 @@ count_over_55 = df_clean.filter(
 
   (F.col("Age") > 55) & (F.col("Score") > X)
 
-).count()
+).count() 
+
+
+
+
+
+### The “Maximum Subarray Sum” challenge
 
  
 
-### Counting the duplicates in a list
+On HackerRank it usually appears under “Algorithms → Dynamic Programming” (sometimes in the warmup/interview prep kit).
 
  
 
- 
-
-This is a manual frequency counter for lists (counting duplicates).
+It’s the one solved with Kadane’s Algorithm.
 
  
 
-Here, items just means some iterable of elements — usually a list, but it could be a string, tuple, etc.
+Problem (typical wording)
+
+Given an integer array, find the maximum possible sum of a contiguous subarray.
 
  
 
-Examples:
+Input: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+Output: 6
 
  
 
-items = ["a", "b", "a", "c", "b", "a"]
+Kadane's Algorithm
 
-\# or
+ ````
+def max_subarray_sum(arr):
 
-items = [1, 2, 2, 3, 1, 1]
+  current_sum = max_sum = arr[0]
 
- 
+  for x in arr[1:]:
 
-freq = {}
+     Either extend the current subarray OR start fresh from x
+     current_sum = max(x, current_sum + x)
+     # Track global maximum
+     max_sum = max(max_sum, current_sum)
 
-for x in items:
+  return max_sum
 
-  freq[x] = freq.get(x, 0) + 1
+ ````
 
- 
 
- 
 
-🔹 How it works, step by step
-
- 
-
-  freq = {} → start with an empty dictionary.
+### Fizz Buzz
 
  
 
-  for x in items: → loop through each element.
+Replace any number divisible by three with the word "fizz", and any number divisible by five with the word "buzz", and any number divisible by both three and five with the word "fizzbuzz".
+
+
+
+As a procedure :
+
+ ````
+def fizzBuzz(n):  
+
+  range_list = range(1,n+1) 
+
+  for n in range_list: 
+     output = "" 
+     if n%3 == 0: 
+       output = "Fizz" 
+     if n % 5 == 0: 
+       output += "Buzz" 
+     if output == "": 
+       print( n ) 
+     else: 
+       print( output ) 
+ ````
+
+
+
+and list comprehension 
 
  
 
-  freq.get(x, 0) → lookup x in the dictionary:
+ ````
+def fizzBuzz(n):
 
- 
+  results = [
+    ("Fizz" * (i % 3 == 0) + "Buzz" * (i % 5 == 0)) or str(i)
+    for i in range(1, n+1)
+  ]
 
-​    If it exists, return its current count.
+  print("\n".join(results))
+ ````
 
- 
-
-​    If not, return 0 (default).
-
- 
-
-  \+ 1 → add one to that count.
-
- 
-
-  freq[x] = ... → store the updated count back in the dictionary.
-
- 
-
-🔹 Example in action
-
- 
-
-items = ["a", "b", "a", "c", "b", "a"]
-
-freq = {}
-
- 
-
-for x in items:
-
-  freq[x] = freq.get(x, 0) + 1
-
- 
-
-print(freq)
-
- 
-
-{'a': 3, 'b': 2, 'c': 1}
-
- 
-
-So "a" appeared 3 times, "b" 2 times, "c" once.
-
- 
-
-🔹 Why .get() is handy
-
- 
-
-Without .get(), you’d have to check manually:
-
- 
-
-if x in freq:
-
-  freq[x] += 1
-
-else:
-
-  freq[x] = 1
-
- 
-
-.get(x, 0) lets you do this in one line.
-
- 
-
- 
-
- 
-
-### De-duplicating a List (remove duplicates)
-
- 
-
-1) Fast, order preserving
-
- 
-
-seen = set()
-
-unique = []
-
-for x in items:
-
-  if x not in seen:
-
-​    seen.add(x)
-
-​    unique.append(x)
-
- 
-
-  Use when: you must keep first occurrence order.
-
- 
-
-  Works for: hashable elements (str, int, tuple, etc.).
-
- 
-
-  Time: O(n)
-
- 
-
-One-liner (readable)
-
- 
-
-def dedupe_keep_order(items):
-
-  seen = set()
-
-  return [x for x in items if not (x in seen or seen.add(x))]
-
- 
-
-2) Fast, order not preserved
-
- 
-
-unique = list(set(items))
-
- 
-
- 
