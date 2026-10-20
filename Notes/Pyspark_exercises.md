@@ -42,3 +42,38 @@ Expected result:
 This one exercise uses three critical operations:
 
 `groupBy()` → `agg()` → `orderBy()`
+
+
+
+## Exercise 2
+
+
+
+
+
+Question:
+
+You have two lists stored in variables `First` and `Last`. The length of the first list is five whereas the length of the second list is six. How can you add the first five elements from each list?
+
+Given code:
+
+```
+First = [8, 5, 7, 8, 2]
+Last = [77, 41, 22, 65, 7, 5]
+# Output# [85, 46, 29, 73, 9]
+```
+
+### Answer options
+
+A.
+
+```
+[i = First[i] + j = Last[j] for i, j in map(First, Last)]
+```
+
+B. ✅ Correct answer
+
+```
+[i + j for i, j in zip(First, Last)]
+```
+
