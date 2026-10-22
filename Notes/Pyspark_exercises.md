@@ -420,42 +420,61 @@ print( f"The number of people over score {x} is {Y}   ")
 ### The “Maximum Subarray Sum” challenge
 
  
-
 On HackerRank it usually appears under “Algorithms → Dynamic Programming” (sometimes in the warmup/interview prep kit).
 
  
-
-It’s the one solved with Kadane’s Algorithm.
-
- 
-
 Problem (typical wording)
 
 Given an integer array, find the maximum possible sum of a contiguous subarray.
 
- 
 
 Input: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
 
 Output: 6
+```
+# simplest 
 
+# remember  : At each number, either extend the previous subarray or start a new one. 
+# If the previous subtotal is negative, it is always better to start again.
+
+def max_subarray_sum(arr):
+    current_sum = arr[0]
+    max_sum = arr[0]
+
+    for x in arr[1:]:
+
+        if current_sum < 0:
+            current_sum = x
+        else:
+            current_sum += x
+
+        max_sum = max(max_sum, current_sum)
+
+    return max_sum
+```
  
 
-Kadane's Algorithm
+
 
  ````
+# Kadane's Algorithm
+Input = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+
 def max_subarray_sum(arr):
 
   current_sum = max_sum = arr[0]
 
   for x in arr[1:]:
-
-     Either extend the current subarray OR start fresh from x
-     current_sum = max(x, current_sum + x)
-     # Track global maximum
-     max_sum = max(max_sum, current_sum)
+    current_sum = max( x, current_sum + x)
+    max_sum = max(max_sum, current_sum)
 
   return max_sum
+
+
+max_sum = max_subarray_sum( Input )
+
+print( f"max sum is {max_sum}")
 
  ````
 
@@ -467,7 +486,7 @@ def max_subarray_sum(arr):
 
 #### solution 1 - proc
 
-
+```
 def fizzBuzz(n):
 
         if I % 3 == 0 and I % 5 == 0:
@@ -487,13 +506,14 @@ for I in range(1,101):
         
 string_f ="\n".join(f_list)
 print(string_f)
-
+```
 
 #### solution 2 - comprehension
 
+```
 result_t = [ ((i % 3 ==0)*"Fizz" + (i % 5 == 0)*"Buzz") or str(i)      for i in range(1,101)]
 
 print( "\n".join( result_t ) )
-
+```
 
 
