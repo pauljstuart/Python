@@ -269,39 +269,35 @@ print(predictions)
 Part A : Count occurrences of elements in a list
 
 
-
- ````
- item_list = ["a", "b", "a", "c", "b", "a"]
+````
+item_list = ["a", "b", "a", "c", "b", "a"]
  
- # or
+# or
  
- item_list = [1, 2, 2, 3, 1, 1]
+item_list = [1, 2, 2, 3, 1, 1]
+  
+freq = {}
+ 
+for value in item_list:
+  if value in freq:
+      freq[value] += 1
+  else:
+      freq[value] = 1
  
  
- freq = {}
+print(freq)
+````
+
+````
+# alternatively
+freq = {}
  
- for value in item_list:
-     freq[value] = freq.get(value, 0) + 1
+for value in item_list:
+    freq[value] = freq.get(value, 0) + 1
  
  
- print(freq)
- ````
-
-
-
-🔹 Why .get() is handy
-
-Without .get(), you’d have to check manually:
-
-if x in freq:
-
-  freq[x] += 1
-
-else:
-
-  freq[x] = 1
-
-.get(x, 0) lets you do this in one line.
+print(freq)
+````
 
  
 
