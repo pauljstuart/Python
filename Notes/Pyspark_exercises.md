@@ -340,158 +340,83 @@ print(freq_dict)
 
  
 
-### De-duplicating a List (remove duplicates)
+### Python - De-duplicating a List (remove duplicates)
 
  
 
-1) Fast, order preserving
 
- 
+items = [ 1,2,2,2,3,4,1,5,2,7,8,15,12,3]
+
+
+
+
+##### solution 1 -  Fast, order not preserved
+
+```
+unique = list(set(items))
+
+print( unique)
+```
+
+#### solution 2 - Fast, order preserving
+
+```
+# notes :
+# Use when: you must keep first occurrence order.
+# Works for: hashable elements (str, int, tuple, etc.).
+#
+# Time O(n) 
+
 
 seen = set()
-
 unique = []
 
 for x in items:
+    if x not in seen:
+        seen.add(x)
+        unique.append(x)
 
-  if x not in seen:
-
-​    seen.add(x)
-
-​    unique.append(x)
-
- 
-
-  Use when: you must keep first occurrence order.
-
- 
-
-  Works for: hashable elements (str, int, tuple, etc.).
-
- 
-
-  Time: O(n)
-
- 
-
-One-liner (readable)
-
- 
-
-def dedupe_keep_order(items):
-
-  seen = set()
-
-  return [x for x in items if not (x in seen or seen.add(x))]
-
- 
-
-2) Fast, order not preserved
-
- 
-
-unique = list(set(items))
+# print( unique )
+```
 
 
 
 
+### Pyspark/Pandas Task : return the number of people over 55 considering that score over x
 
-### Cleaning Data
 
- 
 
-I have the following data
 
- 
+```
+import numpy as np
+import pandas as pd
 
 data = {
-
-'Name' : ['Alice', 'Bob', np.nan, 'David', 'Alice']
-
-'Age' : [24, np.nan, 21,34,24' ],
-
-'Score' : [ 90, 85, np.nan, 88, 90 ]
-
+    'Name': ['Alice', 'Bob', np.nan, 'David', 'Alice'],
+    'Age': [24, np.nan, 21, 34, 24],
+    'Score': [90, 85, np.nan, 88, 90]
 }
 
- 
-
-Task : return the number of people over 55 considering that score over x
-
- 
-
- 
-
 from pyspark.sql import SparkSession
-
 from pyspark.sql import functions as F
 
- 
+pdf = pd.DataFrame(data)
+df = spark.createDataFrame(pdf)
 
-spark = SparkSession.builder.getOrCreate()
 
- 
+#df.display()
 
-df = spark.createDataFrame([
+x = 89
 
-  ("Alice", 24, 90),
+df2 = df.filter( F.col("Age").isNotNull() & F.col("Score").isNotNull()  )
 
-  ("Bob", None, 85),
+df2 = df2.filter( F.col('Score') > x)
+df2.display()
 
-  (None, 21, None),
+Y = df2.count()
 
-  ("David", 34, 88),
-
-  ("Alice", 24, 90)
-
-], ["Name", "Age", "Score"])
-
- 
-
-df.show()
-
- 
-
-+-----+----+-----+
-
-| Name| Age|Score|
-
-+-----+----+-----+
-
-|Alice| 24|  90|
-
-| Bob|null|  85|
-
-| null| 21| null|
-
-|David| 34|  88|
-
-|Alice| 24|  90|
-
-+-----+----+-----+
-
- 
-
- 
-
-cleaning the data :
-
- 
-
-df_clean = df.filter(F.col("Age").isNotNull() & F.col("Score").isNotNull())
-
- 
-
-count over x :
-
- 
-
-count_over_55 = df_clean.filter(
-
-  (F.col("Age") > 55) & (F.col("Score") > X)
-
-).count() 
-
+print( f"The number of people over score {x} is {Y}   ")
+```
 
 
 
@@ -540,47 +465,39 @@ def max_subarray_sum(arr):
 
 
 
-### Fizz Buzz
+### Python - Fizz Buzz
 
  
 
-Replace any number divisible by three with the word "fizz", and any number divisible by five with the word "buzz", and any number divisible by both three and five with the word "fizzbuzz".
+#### solution 1 - proc
 
 
-
-As a procedure :
-
- ````
-def fizzBuzz(n):  
-
-  range_list = range(1,n+1) 
-
-  for n in range_list: 
-     output = "" 
-     if n%3 == 0: 
-       output = "Fizz" 
-     if n % 5 == 0: 
-       output += "Buzz" 
-     if output == "": 
-       print( n ) 
-     else: 
-       print( output ) 
- ````
-
-
-
-and list comprehension 
-
- 
-
- ````
 def fizzBuzz(n):
 
-  results = [
-    ("Fizz" * (i % 3 == 0) + "Buzz" * (i % 5 == 0)) or str(i)
-    for i in range(1, n+1)
-  ]
+        if I % 3 == 0 and I % 5 == 0:
+            return("FizzBuzz")
+        if I % 3 == 0:
+            return("Fizz")
+        if I % 5 == 0:
+            return("Buzz")
 
-  print("\n".join(results))
- ````
+        else:
+            return( str(I)  )
+        
+f_list = []
+
+for I in range(1,101):
+    f_list.append(fizzBuzz(I))
+        
+string_f ="\n".join(f_list)
+print(string_f)
+
+
+#### solution 2 - comprehension
+
+result_t = [ ((i % 3 ==0)*"Fizz" + (i % 5 == 0)*"Buzz") or str(i)      for i in range(1,101)]
+
+print( "\n".join( result_t ) )
+
+
 
