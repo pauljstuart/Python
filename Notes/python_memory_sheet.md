@@ -71,17 +71,17 @@ s[::-1]    # "nohtyP" (reverse)
 
 ```python
 nums = [3, 1, 2]
-nums.append(4)          # add one item
-nums.extend([5, 6])     # add several items
-nums.remove(3)          # remove first matching value
-last = nums.pop()       # remove and return last item
-nums.sort()             # sort list IN PLACE
-ordered = sorted(nums)  # return NEW sorted list
-nums.reverse()          # reverse IN PLACE
-nums[0]                 # first element
-nums[-1]                # last element
-nums[:2]                # first two elements
-nums[::-1]              # reversed copy
+nums.append(4)         				# add one item
+nums.extend([5, 6])					# add several items
+nums.remove(3)         				# remove first matching value
+last = nums.pop()      				# remove and return last item
+nums.sort()             			# sort list IN PLACE
+ordered = sorted(nums, reverse = True)  # return NEW sorted list
+nums.reverse()						# reverse IN PLACE
+nums[0]                				# first element
+nums[-1]             				# last element
+nums[:2]             				# first two elements
+nums[::-1]              			# reversed copy
 ```
 
 `append`, `sort` and `reverse` mutate the list and return `None`. `sorted()` works with other iterables too.
@@ -102,6 +102,9 @@ person.keys()                   # view of keys
 person.values()                 # view of values
 person.items()                  # view of (key, value) pairs
 "name" in person               # checks KEYS, not values
+
+d[key] = value   # replaces the existing value.
+d[key] = d.get(key, 0) + value # accumulates value
 ```
 
 ### A. Iterate over a dictionary ⭐
@@ -171,6 +174,8 @@ a.add(6)
 a.discard(10)   # safely ignores missing value
 
 unique_names = list(set(["Alice", "Bob", "Alice"]))
+When comparing two collections to find missing or additional elements, consider set difference.
+
 ```
 
 **Caution:** Converting to a set removes duplicates but doesn't preserve original order. To deduplicate while keeping order:
@@ -208,21 +213,46 @@ Comprehension patterns:
 ## 8. Sorting and selecting ⭐
 
 ```python
+# sorting a list
 numbers = [5, 2, 9]
 sorted(numbers)                  # ascending, new list
 sorted(numbers, reverse=True)    # descending
-
-people = [
-    {"name": "Alice", "age": 30},
-    {"name": "Bob", "age": 25},
-]
-by_age = sorted(people, key=lambda p: p["age"])
-oldest = max(people, key=lambda p: p["age"])
-
 sum(numbers)
 min(numbers)
 max(numbers)
 len(numbers)
+
+# sorting a dictionary
+scores = {"Charlie": 85, "Alice": 92, "Bob": 78}
+sorted(score)                                      # Sorted keys (list)
+sorted(scores.items())                              # Sort by keys (list of tuples)
+sorted(scores.items(), key=lambda x: x[1])          # Sort by values (ascending)
+sorted(scores.items(), key=lambda x: x[1], reverse=True)  # Sort by values (descending)
+dict(sorted(scores.items()))                        # Dictionary sorted by keys
+dict(sorted(scores.items(), key=lambda x: x[1]))    # Dictionary sorted by values
+
+# sorting a list of dictionaries
+people = [
+    {"name": "Alice", "age": 30},
+    {"name": "Bob", "age": 25},
+]
+by_age = sorted(people, key=lambda p: p["age"])  # note that sorted() returns a list of tuples not a dict!
+
+oldest = max(people, key=lambda p: p["age"])
+sorted(students, key=lambda s: s["score"])         # lowest score first
+max(students, key=lambda s: s["score"])            # dict with highest score
+# sorting by 2 fields :
+by_name = sorted(students, key=lambda s: s["name"])
+result = sorted(by_name, key=lambda s: s["score"], reverse=True)
+
+Remember:
+- sorted(d) → list of keys
+- sorted(d.items()) → list of (key, value) tuples
+- dict(sorted(d.items())) → dictionary with sorted insertion order
+- sorted() always returns a list, never a dictionary, and does not modify the original dictionary.
+
+# Important interview rule: When using multiple stable sorts, sort by the secondary criterion first and the primary criterion last.
+
 ```
 
 ## 9. Functions, type hints and error handling ⭐
@@ -235,6 +265,12 @@ try:
     value = int("123")
 except ValueError as exc:
     print(f"Invalid number: {exc}")
+ 
+# anonymous functions
+ def get_name(X):
+    return X["name"]
+
+lambda X: X["name"]    # same thing
 ```
 
 Understand positional arguments, keyword arguments and default arguments. Avoid mutable defaults such as `def f(items=[])`.

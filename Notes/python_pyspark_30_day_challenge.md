@@ -9,33 +9,41 @@ Difficulty: ★ foundation · ★★ intermediate · ★★★ stretch.
 ## Python
 
 ### P01 · Filter and transform records ★
+
 Given `people = [{"name":"Alice","age":24},{"name":"Bob","age":32},{"name":"Cara","age":29},{"name":"Dan","age":41}]`, return the names of people aged **30 or more**, alphabetically sorted. Expected: `["Bob", "Dan"]`. Practise comprehension and `sorted()`.
 
 ### P02 · Character frequencies ★
 Write `count_chars(text)` that ignores spaces and case and returns a dictionary of character counts. Input: `"Hello World"`. Expected: `{'h':1,'e':1,'l':3,'o':2,'w':1,'r':1,'d':1}` (dictionary key order irrelevant). Practise `.lower()` and `.get()`.
 
 ### P03 · First non-repeating character ★★
+
 Write `first_unique(text)` to return the first character appearing once, or `None` if none exists. Input: `"swiss"` → `"w"`; `"aabb"` → `None`. Case-sensitive. Aim for O(n).
 
 ### P04 · Group orders by customer ★★
+
 Given `orders = [{"customer":"A","amount":20},{"customer":"B","amount":15},{"customer":"A","amount":30}]`, return customer totals as a dictionary. Expected: `{"A":50,"B":15}`. Practise dictionary accumulation.
 
 ### P05 · Sort dictionaries by multiple criteria ★★
+
 Given `students = [{"name":"Amy","score":90},{"name":"Ben","score":80},{"name":"Cara","score":90}]`, sort by **score descending**, then **name ascending**. Expected names: `['Amy','Cara','Ben']`. Practise `sorted(..., key=...)`.
 
 ### P06 · Merge two lists of records ★★
+
 Given `users = [{"id":1,"name":"Alice"},{"id":2,"name":"Bob"}]` and `scores = [{"id":2,"score":95},{"id":1,"score":88}]`, return records with `id`, `name`, and `score` in `users` order. Expected: `[{'id':1,'name':'Alice','score':88},{'id':2,'name':'Bob','score':95}]`. Avoid nested O(n²) scans.
 
 ### P07 · Valid parentheses ★★
+
 Write `is_balanced(s)` for strings containing only `()[]{}`. Input: `"{[()]}"` → `True`; `"([)]"` → `False`; `""` → `True`. Practise stack/list.
 
 ### P08 · Two Sum ★★
+
 Write `two_sum(nums, target)` to return indices of two **distinct** elements that sum to the target; return `None` if absent. Input: `nums=[2,7,11,15], target=9` → `(0,1)`. Aim for O(n).
 
 ### P09 · Find the missing integer ★
 An array contains all integers from `1` to `n` except one, in any order. Write `missing_number(nums, n)`. Input: `[5,2,1,4], n=5` → `3`. Avoid sorting if possible.
 
 ### P10 · Merge overlapping intervals ★★★
+
 Write `merge_intervals(intervals)` for closed intervals, returning sorted non-overlapping intervals. Input: `[[1,3],[2,6],[8,10],[10,12]]` → `[[1,6],[8,12]]`. Touching intervals count as overlapping.
 
 ### P11 · Parse nested JSON-like dictionaries ★★
