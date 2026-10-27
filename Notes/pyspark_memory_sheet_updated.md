@@ -5,12 +5,13 @@
 
 **How to use:** Run the setup once, then practise sections independently. Examples use the DataFrame API rather than collecting data into Python.
 
-## 1. Imports and create a DataFrame ⭐
+## 1. Imports, creating and reading a DataFrame ⭐
 
 ```python
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 spark = SparkSession.builder.getOrCreate()
 
@@ -22,6 +23,21 @@ rows = [
 df = spark.createDataFrame(rows, ["name", "age", "city", "salary"])
 df.show()
 df.printSchema()
+```
+
+```python
+# reading a csv file :
+csv_path = "/mnt/training/pageviews.csv"
+df = spark.read.option("sep", "\t").option("inferSchema", csv(csv_path)
+
+spark.read.json()    # read json file
+spark.read.load()    # read a parquet file
+```
+
+```python
+# delta catalog
+spark.table()    # read a catalog delta table
+spark.sql()      # returns a dataframe, sql on a catalog delta tab
 ```
 
 **Remember:** `F.col("age")` refers to a Spark column, not a Python value. The `F.` convention makes it easy to see where a function comes from and avoids shadowing Python built-ins (`sum`, `max`). Alternatively: `from pyspark.sql.functions import col, lit, when`.
@@ -167,7 +183,19 @@ customers.join(orders, on="customer_id", how="left_semi") # matched customers on
 
 # Different join key names:
 # left.join(right, left["id"] == right["customer_id"], "inner")
+
+
 ```
+
+### The rule to memorise ⭐
+
+| Join        | What is preserved?                                |
+| ----------- | ------------------------------------------------- |
+| `left`      | All rows from the DataFrame before `.join()`      |
+| `right`     | All rows from the DataFrame passed into `.join()` |
+| `inner`     | Only matching rows                                |
+| `full`      | All rows from both DataFrames                     |
+| `left_anti` | Left rows with no match on the right              |
 
 **Remember:** A one-to-many join produces multiple rows per left-side key. `left_anti` returns left rows without a right match; `left_semi` returns left rows that have a match without right-side columns. Null join keys do not match under normal equality.
 
@@ -193,6 +221,8 @@ people = spark.createDataFrame(
     ["dept", "name", "salary"]
 )
 
+from pyspark.sql import Window  # note capital W, it's an object!
+
 w = Window.partitionBy("dept").orderBy(F.col("salary").desc())
 ranked = people.withColumn("salary_rank", F.dense_rank().over(w))
 numbered = people.withColumn("rn", F.row_number().over(w))
@@ -214,7 +244,19 @@ with_previous = people.withColumn("previous_salary", F.lag("salary").over(w))
 with_next = people.withColumn("next_salary", F.lead("salary").over(w))
 ```
 
-**Know the difference:** `row_number()` always gives sequential numbers; `rank()` skips ranks after ties (1, 1, 3); `dense_rank()` does not skip (1, 1, 2). `row_number()` needs a deterministic tie-breaker for a reproducible winner.
+row_number(), rank() and dense_rank() 
+
+| Salary | row_number | rank | dense_rank |
+| ------ | ---------- | ---- | ---------- |
+| 90000  | 1          | 1    | 1          |
+| 80000  | 2          | 2    | 2          |
+| 80000  | 3          | 2    | 2          |
+| 70000  | 4          | 4    | 3          |
+
+- `row_number()` — unique sequential numbers, even when values tie.
+- `rank()` — same rank for ties, but skips subsequent rank numbers.
+- `dense_rank()` — same rank for ties, without gaps.
+- `row_number()` needs a deterministic tie-breaker for a reproducible winner.
 
 ### Rolling average over current and previous two rows ◇
 
@@ -279,9 +321,11 @@ parsed.select("id", F.col("parsed.type").alias("type"),
 
 ```python
 filtered = df.filter(F.col("age") >= 30) # transformation: lazy
-filtered.show()                          # action: runs the query
+filtered.show()                         # action: runs the query
 filtered.count()                         # action
 filtered.explain()                       # inspect execution plan
+filtered.show(10)
+filtered.lijmit(5)
 
 cached = filtered.cache()                # mark for caching
 cached.count()                           # materialise cache
@@ -311,7 +355,22 @@ df.explain()                              # query plan
 
 **Remember:** In most PySpark environments, use `df.show()`; Databricks also supports `display(df)` and, in some contexts, `df.display()`.
 
-## 16. Five interview patterns to memorise ⭐
+
+
+## 16. Writing out dataframes
+
+
+
+```python
+df.write.format("delta")
+           .mode("overwrite")
+           .saveAsTable("meta_data.role_dataset_map")                                # writing delta table
+df.createOrReplaceTempView("temp_table")                                             # write to temp view
+```
+
+
+
+## 17. Five interview patterns to memorise ⭐
 
 **1 — Filter, select:**
 
@@ -348,18 +407,7 @@ df.groupBy("city").count() \
 customers.join(orders, "customer_id", "left_anti")
 ```
 
-### Mini practice questions (write from memory)
-
-1. Filter London residents aged 25+, selecting `name` and `age` only. **(S01)**
-2. Add high/medium/low salary bands using chained `when()`. **(S02)**
-3. Keep original names; create `clean_name` using `trim()` and `initcap()`; fill null ages with 0. **(S03)**
-4. Count event types and order by count descending, then name ascending. **(S04)**
-5. Return department employee counts, average salaries and maximum salaries. **(S05)**
-6. Find customers with no orders using `left_anti`. **(S08)**
-7. Calculate each customer's total, including customers with no orders as zero. **(S09)**
-8. Return latest event per device using `row_number()`. **(S10)**
-9. Give tied salaries equal dense ranks within each department. **(S11)**
-10. Parse JSON payloads and explode tag arrays. **(S13–S14)**
+10. 
 
 ---
 
