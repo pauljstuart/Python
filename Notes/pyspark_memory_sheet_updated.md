@@ -5,7 +5,7 @@
 
 **How to use:** Run the setup once, then practise sections independently. Examples use the DataFrame API rather than collecting data into Python.
 
-## 1. Imports, creating and reading a DataFrame ⭐
+## 1. Imports, creating a DataFrame ⭐
 
 ```python
 from pyspark.sql import SparkSession
@@ -15,6 +15,8 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 spark = SparkSession.builder.getOrCreate()
 
+# Example 1 – from a list of tuples
+
 rows = [
     ("Alice", 25, "London", 50000),
     ("Bob", 30, "Paris", 60000),
@@ -22,8 +24,41 @@ rows = [
 ]
 df = spark.createDataFrame(rows, ["name", "age", "city", "salary"])
 df.show()
-df.printSchema()
+
+# Example 2 – from a list of Dictionaries
+# The easiest and most intuitive, and you don’t need to specify the schema as it’s inside the dictionary.
+
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.getOrCreate()
+
+data = [
+    {
+        "tenant": "GFZN",
+        "role_name": "CURDS_OT_999",
+    },
+    {
+        "tenant": "GFZN",
+        "role_name": "CURDS_US_054",
+    }  ]
+
+df = spark.createDataFrame(data)
+df.show()
+
+# Example 3 - a column oriented dictionary (pandas only)
+import numpy as np
+import pandas as pd
+
+data = {
+    'Name': ['Alice', 'Bob', np.nan, 'David', 'Alice'],
+    'Age': [24, np.nan, 21, 34, 24],
+    'Score': [90, 85, np.nan, 88, 90]
+}
+
+pdf = pd.DataFrame(data)
+df = spark.createDataFrame(pdf)
 ```
+
+## 2. Reading a DataFrame from a file
 
 ```python
 # reading a csv file :
@@ -45,15 +80,20 @@ spark.sql()      # returns a dataframe, sql on a catalog delta tab
 ## 2. Selecting and filtering ⭐
 
 ```python
-df.select("name", "salary")                       # choose columns
-df.select(F.col("salary").alias("pay"))            # rename in result
-df.filter(F.col("age") > 30)                      # filter rows
-df.where(F.col("city") == "London")              # same idea as filter
-df.filter((F.col("age") >= 25) & (F.col("city") == "London"))
-df.filter((F.col("city") == "London") | (F.col("city") == "Paris"))
-df.filter(~(F.col("age") < 30))                  # NOT
+# selecting columns
+df.select("name", "salary")                                           # choose columns
+selected_columns = [‘columna’,’columnb’]
+df = df.select( *selected_columns) 
+df.select(F.col("salary").alias("pay"))                               # rename in result
+# filtering
+df.filter(F.col("age") > 30)                                          # filter rows
+df.where(F.col("city") == "London")                                   # same idea as filter
+df.filter((F.col("age") >= 25) & (F.col("city") == "London"))         # multiple filters & condition
+df.filter((F.col("city") == "London") | (F.col("city") == "Paris"))   # multiple filters | condition
+df.filter(~(F.col("age") < 30))                                       # NOT
 df.filter(F.col("city").isin("London", "Paris"))
-df.filter(F.col("name").like("A%"))             # SQL LIKE
+df.filter(F.col("name").like("A%"))                                   # SQL LIKE
+df.filter( col("article").startswith("Special:") == False)
 ```
 
 **Remember:** Use `&`, `|`, `~` for Spark column conditions, **not** Python `and`, `or`, `not`. Put each comparison in parentheses when combining conditions. `==` means equality.
@@ -295,11 +335,13 @@ dates_df.select(
 ## 13. Arrays, structs and JSON ◇
 
 ```python
+# exploding an array :
 docs = spark.createDataFrame(
     [(1, ["ai", "python"]), (2, ["spark"])], ["doc_id", "tags"]
 )
 docs.select("doc_id", F.explode("tags").alias("tag"))
 
+# using StructType and from_json() to parse a json string
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 payloads = spark.createDataFrame(
@@ -324,8 +366,6 @@ filtered = df.filter(F.col("age") >= 30) # transformation: lazy
 filtered.show()                         # action: runs the query
 filtered.count()                         # action
 filtered.explain()                       # inspect execution plan
-filtered.show(10)
-filtered.lijmit(5)
 
 cached = filtered.cache()                # mark for caching
 cached.count()                           # materialise cache
@@ -407,8 +447,17 @@ df.groupBy("city").count() \
 customers.join(orders, "customer_id", "left_anti")
 ```
 
-10. 
+**6 - Iterating over a Dataframe:**
 
+``` python
+sql_text = "select task_name from table"
+tasks_df = spark.sql(sql_text).collect()
+
+output_text = "".join( 
+             "\ntask edit {row.task_name}\nplugin reset\npersist"
+             for row in tasks_df
+print( output_text)
+```
 ---
 
 ## How to revise this sheet

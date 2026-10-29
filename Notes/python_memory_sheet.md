@@ -69,6 +69,8 @@ s[::-1]    # "nohtyP" (reverse)
 
 ## 4. Lists ⭐
 
+Definition : A list is an ordered, mutable collection
+
 ```python
 nums = [3, 1, 2]
 nums.append(4)         				# add one item
@@ -77,11 +79,21 @@ nums.remove(3)         				# remove first matching value
 last = nums.pop()      				# remove and return last item
 nums.sort()             			# sort list IN PLACE
 ordered = sorted(nums, reverse = True)  # return NEW sorted list
-nums.reverse()						# reverse IN PLACE
+
 nums[0]                				# first element
 nums[-1]             				# last element
 nums[:2]             				# first two elements
 nums[::-1]              			# reversed copy
+# in place methods (returns None)
+lst.sort()
+lst.reverse()
+lst.clear()
+lst.append()
+lst.extend(iterable)
+lst.insert(i, x)
+lst.remove(x)
+lst.pop(i)    # this returns the popped (removed) value
+lst.copy      # shallow copy
 ```
 
 `append`, `sort` and `reverse` mutate the list and return `None`. `sorted()` works with other iterables too.
@@ -161,6 +173,22 @@ merged = a | b      # {'x': 1, 'y': 9, 'z': 3}
 
 **Remember:** Later values win when keys overlap.
 
+### F Converting a Dictionary to a list of tuples
+
+ ``` python
+# items() always returns a tuple
+
+freqs = {'to': 2, 'be': 2, 'or': 1, 'not': 1}
+pairs = list(freqs.items())
+print(pairs)
+```
+### G Adding Duplicate keys
+
+in Python, if you add a duplicate key to a dictionary, you do not get an error.
+Instead, the new value simply overwrites the old one.
+
+
+
 ## 6. Sets ⭐
 
 ```python
@@ -199,6 +227,8 @@ evens = [x for x in range(10) if x % 2 == 0]
 unique_lengths = {len(s) for s in ["cat", "bird", "dog"]}
 lookup = {name: len(name) for name in ["Alice", "Bob"]}
 generator = (x * x for x in range(5))
+# multidimension comprehension
+pairs = [(x, y) for x in [1, 2, 3] for y in [4, 5, 6]]
 ```
 
 Comprehension patterns:
@@ -304,7 +334,85 @@ by_team["IT"].append("Alice")
 
 `Counter` handles frequency counting; `defaultdict(list)` handles grouping. Be able to write the equivalent manually first.
 
-## 12. Five interview patterns to practise ⭐
+
+
+## 12. Datetime
+
+
+``` python
+# imports
+from datetime import datetime, date, timedelta
+
+# Getting now
+now = datetime.now()   # current date & time
+today = date.today()   # just the date
+
+# Difference between two dates / times
+d1 = datetime(2023, 5, 1, 14, 30)
+d2 = datetime(2023, 5, 3, 16, 45)
+delta = d2 - d1  # type: timedelta
+print(delta)   # 2 days, 2:15:00
+
+# Access parts of the interval:
+delta.days    # 2
+delta.seconds   # 8100  (2h 15m = 8100 sec)
+delta.total_seconds() # 183900.0
+
+#Adding / subtracting intervals
+future = now + timedelta(days=7, hours=3)
+past  = now - timedelta(days=1)
+
+# Only working with date (no time)
+
+d1 = date(2023, 1, 1)
+d2 = date(2023, 1, 15)
+print((d2 - d1).days) # 14
+
+# Parsing & formatting date strings
+# String → datetime
+dt = datetime.strptime("2025-08-26 14:30", "%Y-%m-%d %H:%M")
+# Datetime → string
+print(dt.strftime("%d %B %Y, %H:%M")) # "26 August 2025, 14:30"
+
+ 
+
+#Common patterns
+# Days between two dates:
+(date2 - date1).days
+# Hours/minutes between two datetimes:
+(dt2 - dt1).total_seconds() / 3600
+(dt2 - dt1).total_seconds() / 60
+
+
+Pro tip for interviews:
+
+Always remember datetime - datetime → timedelta, and timedelta gives you .days, .seconds, and .total_seconds() for flexibility.
+```
+
+####  Python Date & Time Format Codes (strftime/strptime)
+
+| Code | Meaning            | Code | Meaning        |
+| ---- | ------------------ | ---- | -------------- |
+| `%Y` | Year (2025)        | `%y` | Year (25)      |
+| `%m` | Month (08)         | `%B` | August         |
+| `%b` | Aug                | `%d` | Day (26)       |
+| `%A` | Tuesday            | `%a` | Tue            |
+| `%H` | Hour 24h (14)      | `%I` | Hour 12h (02)  |
+| `%p` | AM/PM              | `%M` | Minute (30)    |
+| `%S` | Second (05)        | `%f` | Microseconds   |
+| `%z` | UTC offset (+0100) | `%Z` | Timezone (UTC) |
+
+Common examples:
+
+- `%Y-%m-%d` → `2025-08-26`
+- `%d/%m/%Y` → `26/08/2025`
+- `%H:%M:%S` → `14:30:05`
+- `%I:%M %p` → `02:30 PM`
+- `%A, %d %B %Y` → `Tuesday, 26 August 2025`
+
+
+
+## 13. Five interview patterns to practise ⭐
 
 **1 — Count occurrences:** loop over values and update `counts[x] = counts.get(x, 0) + 1`.
 
@@ -335,3 +443,70 @@ by_team["IT"].append("Alice")
 - **Later:** Review the ◇ items; don't let them crowd out the fundamentals.
 
 **Interview habit:** Explain the data shape → state your approach → write a small working solution → test an edge case (empty input, missing key, duplicates, etc.).
+
+
+
+## Python Snippets
+
+ 
+
+
+``` python
+# Counting occurences
+items = ["a", "b", "a", "c", "b", "a"]
+freq = {}
+
+for x in items:
+  freq[x] = freq.get(x, 0) + 1
+
+print(freq)
+{'a': 3, 'b': 2, 'c': 1}
+```
+
+
+ ``` python
+# de-duplicating a list :
+
+items = [ 3,2,34,12,]
+seen = set()
+unique = []
+
+for x in items:
+  if x not in seen:
+    seen.add(x)
+    unique.append(x)
+ ```
+
+``` python
+#sorting a list of tuples
+
+list = [('be', 2), ('not', 1), ('or', 1), ('to', 2)]
+
+sorted(list) → sorts by first element, then second, etc.
+sorted(list, key=lambda x: x[0]) → sort by first element
+sorted(list, key=lambda x: x[1]) → sort by second element
+```
+
+``` python
+#Creating a multidimensional list of 3 integers
+
+  array = [[i, j, k] for i in range(x+1) for j in range(y+1) for k in range(z+1) i]
+
+  print( array)
+```
+
+``` python
+# Using RE groups
+import re
+
+ 
+s = "Name: Alice, Age: 30"
+match = re.search(r"Name: (\w+), Age: (\d+)", s)
+
+if match:
+  print(match.group(1)) # 'Alice'
+  print(match.group(2)) # '30'
+```
+
+
+
