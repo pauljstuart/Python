@@ -37,20 +37,38 @@ x in [1, 2, 3]
 ## 3. Strings ⭐
 
 ```python
-s = "  Hello,Python  "
-s.strip()                    # "Hello,Python"
-s.lower()                    # "  hello,python  "
-s.upper()
-s.replace("Python", "World")
-s.split(",")                 # ["  Hello", "Python  "]
-"-".join(["a", "b", "c"])     # "a-b-c"
-"hello".startswith("he")     # True
-"file.csv".endswith(".csv")  # True
-"Python" in s               # True
-len(s)
+# PYTHON STRINGS — CORE CHEAT SHEET
+# Strings are immutable: methods return new strings rather than changing the original.
 
-name = "Alice"
-message = f"Hello, {name}!"  # f-string
+text = "  Python Programming Is Fun!  "
+
+# STRING METHODS
+len(text)                            # Number of characters | len("hello") → 5
+text.lower()                         # Lowercase            | "HELLO" → "hello"
+text.upper()                         # Uppercase            | "hello" → "HELLO"
+text.capitalize()                    # First character caps | "hello world" → "Hello world"
+text.title()                         # Capitalise each word | "hello world" → "Hello World"
+text.swapcase()                      # Reverse letter case  | "Hello" → "hELLO"
+text.strip()                         # Remove outer spaces  | " hi ".strip() → "hi"
+text.lstrip()                        # Remove left spaces   | " hi ".lstrip() → "hi "
+text.rstrip()                        # Remove right spaces  | " hi ".rstrip() → " hi"
+text.replace("Fun", "Great")         # Replace text         | "cat" → "bat" (replace "c" with "b")
+text.split()                         # Split into list     | "a b c" → ["a", "b", "c"]
+"-".join(["a", "b"])                 # Join strings        | ["a", "b"] → "a-b"
+text.find("Python")                  # Find position        | "Python".find("th") → 2; -1 if absent
+text.index("Python")                 # Find position        | "Python".index("th") → 2; error if absent
+text.count("m")                      # Count occurrences    | "banana".count("a") → 3
+text.startswith("  Python")         # Check beginning      | "Python".startswith("Py") → True
+text.endswith("  ")                 # Check ending         | "file.csv".endswith(".csv") → True
+
+# TESTING STRING CONTENTS — ALL RETURN True OR False
+"123".isdigit()                      # Digits only         → True
+"abc".isalpha()                      # Letters only        → True
+"abc123".isalnum()                   # Letters/numbers     → True
+"   ".isspace()                      # Whitespace only     → True
+"hello".islower()                    # Lowercase letters   → True
+"HELLO".isupper()                    # Uppercase letters   → True
+
 ```
 
 **Know string indexing and slicing:**
@@ -58,14 +76,10 @@ message = f"Hello, {name}!"  # f-string
 ```python
 s = "Python"
 s[0]       # "P"
-s[-1]      # "n"
+s[-1]      # "n" (quick way of getting last index)
 s[1:4]     # "yth" (end excluded)
 s[::-1]    # "nohtyP" (reverse)
 ```
-
-◇ Recognise: `find()`, `count()`, `title()`, `capitalize()`, `isdigit()`, `isalpha()`, `isalnum()`.
-
-**Important:** Strings are immutable: `s.replace(...)` returns a new string; it does not change `s`.
 
 ## 4. Lists ⭐
 
@@ -181,7 +195,7 @@ merged = a | b      # {'x': 1, 'y': 9, 'z': 3}
 freqs = {'to': 2, 'be': 2, 'or': 1, 'not': 1}
 pairs = list(freqs.items())
 print(pairs)
-```
+ ```
 ### G Adding Duplicate keys
 
 in Python, if you add a duplicate key to a dictionary, you do not get an error.
@@ -255,11 +269,12 @@ len(numbers)
 # sorting a dictionary
 scores = {"Charlie": 85, "Alice": 92, "Bob": 78}
 sorted(score)                                      # Sorted keys (list)
-sorted(scores.items())                              # Sort by keys (list of tuples)
+sorted(scores.items())                              # Sort by keys (*sorted returns a list of tuples*)
 sorted(scores.items(), key=lambda x: x[1])          # Sort by values (ascending)
 sorted(scores.items(), key=lambda x: x[1], reverse=True)  # Sort by values (descending)
 dict(sorted(scores.items()))                        # Dictionary sorted by keys
 dict(sorted(scores.items(), key=lambda x: x[1]))    # Dictionary sorted by values
+sorted(freq_dict.items(), key=lambda x: (-x[1], x[0])) # sorting by values, then keys
 
 # sorting a list of dictionaries
 people = [
@@ -412,7 +427,43 @@ Common examples:
 
 
 
-## 13. Five interview patterns to practise ⭐
+## 13. Generators ⭐
+
+```python
+def simple_gen():
+    print("Start")
+    yield 1
+    print("Middle")
+    yield 2
+    print("End")
+
+g = simple_gen()
+print(next(g))  # Start → 1
+print(next(g))  # Middle → 2
+print(next(g))  # End → StopIteration
+
+```
+
+```python
+#Example: Fibonacci sequence generator
+
+def fibonacci():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+f = fibonacci()
+print(next(f))  # 0
+print(next(f))  # 1
+print(next(f))  # 1
+print(next(f))  # 2
+
+print(list(fibonacci(50)))
+
+```
+
+## 14. Five interview patterns to practise ⭐
 
 **1 — Count occurrences:** loop over values and update `counts[x] = counts.get(x, 0) + 1`.
 
@@ -509,4 +560,18 @@ if match:
 ```
 
 
+```python
+#  Using get() with defaults for non-existing keys
 
+payload = {
+    "response": {
+        "items": []
+    }
+}
+
+payload = {
+    "response": {}
+}
+
+items = payload.get("response", {}).get("items", [])
+```

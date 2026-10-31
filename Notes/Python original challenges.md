@@ -1,72 +1,6 @@
-# Pyspark Exercises
+# Python Challenges
 
 
-
-
-
-###  PySpark — Average salary by department
-
-
-
-"Using PySpark, find the average salary for each department, and return the departments ordered by average salary, highest first."
-
-
-
-employees
-
-| name    | department | salary |
-| ------- | ---------- | ------ |
-| Alice   | IT         | 60,000 |
-| Bob     | HR         | 45,000 |
-| Charlie | IT         | 75,000 |
-| David   | HR         | 55,000 |
-| Eve     | IT         | 80,000 |
-
-
-
-Here's the solution:
-
-```
-data = [
-    ("Alice", "IT", 60000),
-    ("Bob", "HR", 45000),
-    ("Charlie", "IT", 75000),
-    ("David", "HR", 55000),
-    ("Eve", "IT", 80000)
-]
-
-df = spark.createDataFrame(
-    data, schema=["name", "dept", "salary"]
-)
-
-df.display()
-
-
-from pyspark.sql.functions import avg, col
-
-
-result = (
-    df.groupBy("dept").agg(
-        avg("salary").alias("avg_salary")
-    )
-)
-
-# .orderBy(col("avg_salary").desc())
-
-result = result.orderBy(col("avg_salary").desc())
-result.show()
-```
-
-Expected result:
-
-| department | avg_salary |
-| ---------- | ---------- |
-| IT         | 71,666.67  |
-| HR         | 50,000     |
-
-This one exercise uses three critical operations:
-
-`groupBy()` → `agg()` → `orderBy()`
 
 
 
@@ -94,20 +28,6 @@ result = [i + j for i, j in zip(First, Last)]
 
 print(result)
 ```
-
-
-
-
-
-
-
-
-
-
-
-### bigocheatsheet.com
-
- 
 
 
 
@@ -378,51 +298,14 @@ for x in items:
 
 
 
-### Pyspark/Pandas Task : return the number of people over 55 considering that score over x
-
-
-
-
-```
-import numpy as np
-import pandas as pd
-
-data = {
-    'Name': ['Alice', 'Bob', np.nan, 'David', 'Alice'],
-    'Age': [24, np.nan, 21, 34, 24],
-    'Score': [90, 85, np.nan, 88, 90]
-}
-
-from pyspark.sql import SparkSession
-from pyspark.sql import functions as F
-
-pdf = pd.DataFrame(data)
-df = spark.createDataFrame(pdf)
-
-
-#df.display()
-
-x = 89
-
-df2 = df.filter( F.col("Age").isNotNull() & F.col("Score").isNotNull()  )
-
-df2 = df2.filter( F.col('Score') > x)
-df2.display()
-
-Y = df2.count()
-
-print( f"The number of people over score {x} is {Y}   ")
-```
-
-
 
 
 ### The “Maximum Subarray Sum” challenge
 
- 
+
 On HackerRank it usually appears under “Algorithms → Dynamic Programming” (sometimes in the warmup/interview prep kit).
 
- 
+
 Problem (typical wording)
 
 Given an integer array, find the maximum possible sum of a contiguous subarray.
@@ -452,7 +335,7 @@ def max_subarray_sum(arr):
 
     return max_sum
 ```
- 
+
 
 
 
@@ -515,5 +398,4 @@ result_t = [ ((i % 3 ==0)*"Fizz" + (i % 5 == 0)*"Buzz") or str(i)      for i in 
 
 print( "\n".join( result_t ) )
 ```
-
 

@@ -410,7 +410,9 @@ df.createOrReplaceTempView("temp_table")                                        
 
 
 
-## 17. Five interview patterns to memorise ⭐
+
+
+## 17. Code Snippets ⭐
 
 **1 — Filter, select:**
 
@@ -458,6 +460,43 @@ output_text = "".join(
              for row in tasks_df
 print( output_text)
 ```
+
+**6 - Writing to nested dictionary:**
+
+``` python
+sql_text = """select tenant,environment, aad_group_name
+from meta_data.table
+"""
+
+df = spark.sql(sql_text)
+df.show()
+
+security_dict = {}
+
+for row in df.collect():
+    tenant = row["tenant"]
+    environment = row["environment"]
+    group_name = row["aad_group_name"]
+
+    if tenant not in security_dict
+        security_dict[tenant] = {}
+    security_dict[tenant][environment] = group_name
+    #security_dict.setdefault(tenant, {})[environment] = group_name
+        
+
+print(security_dict)
+{
+    'ASDT': {
+        'DEVELOPMENT': 'MIM_GS4-GWG_ASDT_MEGDP_UC_SCHEMA_RO',
+        'PRODUCTION': 'MIM_GS4-GWS_ASDT_MEGDP_UC_SCHEMA_RO',
+        'PRODUCTION ACCEPTANCE TEST': 'MIM_GS4-GWW_ASDT_MEGDP_UC_SCHEMA_RO',
+        'USER ACCEPTANCE TEST': 'MIM_GS4-GWL_ASDT_MEGDP_UC_SCHEMA_RO'
+    }
+}
+```
+
+
+
 ---
 
 ## How to revise this sheet
