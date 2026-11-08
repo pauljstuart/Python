@@ -1,3 +1,5 @@
+
+
 # Python Interview Memory Sheet
 
 **Purpose:** Core Python syntax and reusable patterns to reproduce confidently in a live coding interview.  
@@ -122,6 +124,7 @@ person.get("city")              # None if missing
 person.get("city", "Unknown")   # provide default
 person["city"] = "London"      # add or update
 person.update({"age": 31})     # update from another dict
+person.setdefault("gender", "girl")
 person.pop("city", None)        # remove key safely
 
 person.keys()                   # view of keys
@@ -182,7 +185,12 @@ ranked = sorted(scores.items(), key=lambda pair: pair[1], reverse=True)
 ```python
 a = {"x": 1, "y": 2}
 b = {"y": 9, "z": 3}
+# using union operator
 merged = a | b      # {'x': 1, 'y': 9, 'z': 3}
+# using unpacking (**)
+merged = {**a, **b}
+# using update() method
+a.update(b)
 ```
 
 **Remember:** Later values win when keys overlap.
@@ -467,11 +475,7 @@ print(list(fibonacci(50)))
 
 **1 — Count occurrences:** loop over values and update `counts[x] = counts.get(x, 0) + 1`.
 
-**2 — Filter records:** `[r for r in records if r["active"]]`.
-
-**3 — Group records:** use `groups.setdefault(key, []).append(value)`.
-
-**4 — Deduplicate while preserving order:** `list(dict.fromkeys(values))` (for hashable values).
+**2
 
 **5 — Sort records:** `sorted(records, key=lambda r: r["score"], reverse=True)`.
 
@@ -507,11 +511,16 @@ print(list(fibonacci(50)))
 items = ["a", "b", "a", "c", "b", "a"]
 freq = {}
 
+# accumulation
 for x in items:
   freq[x] = freq.get(x, 0) + 1
 
 print(freq)
 {'a': 3, 'b': 2, 'c': 1}
+
+# using a set
+freq = { X: items.count(X) for X in set(items)}
+# note you can't use a dictionary comprehension
 ```
 
 
@@ -537,6 +546,47 @@ sorted(list) → sorts by first element, then second, etc.
 sorted(list, key=lambda x: x[0]) → sort by first element
 sorted(list, key=lambda x: x[1]) → sort by second element
 ```
+
+```python
+# Deduplicate while preserving order:
+
+items = ["a", "b", "a", "c", "b", "d"]
+unique_items = list(dict.fromkeys(items))   # note as long as values are hashable
+print(unique_items)  
+# Output: ['a', 'b', 'c', 'd']
+
+```
+
+```
+# Filter records:
+[r for r in records if r["active"]]`.
+
+
+
+
+```
+
+```python
+#— Dictionary - Group records:
+use `groups.setdefault(key, []).append(value)`.
+
+items = [
+    {'type': 'fruit', 'name': 'apple'},
+    {'type': 'fruit', 'name': 'banana'},
+    {'type': 'vegetable', 'name': 'carrot'},
+    {'type': 'fruit', 'name': 'orange'},
+    {'type': 'vegetable', 'name': 'lettuce'}
+]
+
+grouped_items = {}
+
+for item in items:
+    grouped_items.setdefault(item['type'], []).append(item['name'])
+
+print(grouped_items)
+```
+
+
 
 ``` python
 #Creating a multidimensional list of 3 integers

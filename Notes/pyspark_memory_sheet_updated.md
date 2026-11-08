@@ -63,10 +63,11 @@ df = spark.createDataFrame(pdf)
 ```python
 # reading a csv file :
 csv_path = "/mnt/training/pageviews.csv"
-df = spark.read.option("sep", "\t").option("inferSchema", csv(csv_path)
+df = spark.read.option("sep", "\t").option("inferSchema").csv(csv_path)
 
 spark.read.json()    # read json file
-spark.read.load()    # read a parquet file
+spark.read.parquet()    # read a parquet file
+spark.read.text()
 ```
 
 ```python

@@ -50,11 +50,13 @@ def count_chars( text ):
     text = text.replace( ' ', '').lower()
     count_dict = {}
     for char in text :
+
+        if char not in count_dict:
+            count_dict[char] = 0
+        count_dict[char] +=1
+        
         # count_dict[char] = count_dict.get(char, 0) + 1
-        if char in count_dict:
-            count_dict[char] +=1
-        else:
-            count_dict[char] = 1
+        
     return count_dict
 
 
