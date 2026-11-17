@@ -359,7 +359,48 @@ by_team["IT"].append("Alice")
 
 
 
-## 12. Datetime
+## 12. Python f-String Quick Reference
+
+
+| Purpose           | Format                   | Example output     |
+| ----------------- | ------------------------ | ------------------ |
+| 2 decimal places  | `f"{x:.2f}"`             | `3.14`             |
+| Comma separators  | `f"{x:,}"`               | `1,234,567`        |
+| Commas + decimals | `f"{x:,.2f}"`            | `1,234.57`         |
+| Percentage        | `f"{x:.1%}"`             | `85.7%`            |
+| Leading zeros     | `f"{n:05d}"`             | `00042`            |
+| Left align        | `f"{s:<10}"`             | `"Hi        "`     |
+| Right align       | `f"{s:>10}"`             | `"        Hi"`     |
+| Centre align      | `f"{s:^10}"`             | `"    Hi    "      |
+| ISO date          | `f"{dt:%Y-%m-%d}"`       | `2026-11-14`       |
+| Short date        | `f"{dt:%d %b %Y}"`       | `14 Nov 2026`      |
+| Full date         | `f"{dt:%d %B %Y}"`       | `14 November 2026` |
+| Time (24-hour)    | `f"{dt:%H:%M}"`          | `15:30`            |
+| Time (12-hour)    | `f"{dt:%I:%M %p}"`       | `03:30 PM`         |
+| Date and time     | `f"{dt:%d/%m/%Y %H:%M}"` | `14/11/2026 15:30` |
+
+### **Example setup**
+
+```
+from datetime import datetime
+
+x = 0.857
+n = 42
+s = "Hi"
+dt = datetime(2026, 11, 14, 15, 30)
+
+print(f"{x:.2f}")          # 0.86
+print(f"{x:.1%}")          # 85.7%
+print(f"{n:05d}")          # 00042
+print(f"{dt:%d/%m/%Y}")    # 14/11/2026
+print(f"{dt:%H:%M}")       # 15:30
+```
+
+**Remember:** `.2f` = two decimal places, `:05d` = five digits with leading zeros, and `%d/%m/%Y` = day/month/year.
+
+
+
+## 13. Datetime
 
 
 ``` python
@@ -435,7 +476,7 @@ Common examples:
 
 
 
-## 13. Generators ⭐
+## 14. Generators ⭐
 
 ```python
 def simple_gen():
@@ -470,6 +511,67 @@ print(next(f))  # 2
 print(list(fibonacci(50)))
 
 ```
+
+
+
+## 15. Python Quick Reference:  `map()`**,** `zip()`**,** `filter()`
+
+All three return **iterators**, not lists. Use `list()` to convert.
+
+| Function   | Purpose                            | Example                          |
+| ---------- | ---------------------------------- | -------------------------------- |
+| `map()`    | Apply a function to every item     | `map(int, items)`                |
+| `zip()`    | Pair items from multiple iterables | `zip(names, scores)`             |
+| `filter()` | Keep items meeting a condition     | `filter(lambda x: x > 0, items)` |
+
+### **Examples**
+
+```
+# map() — transform each item
+list(map(int, ["1", "2", "3"]))
+# [1, 2, 3]
+
+# zip() — combine corresponding items
+list(zip(["A", "B"], [10, 20]))
+# [("A", 10), ("B", 20)]
+
+# filter() — keep matching items
+list(filter(lambda x: x > 0, [-2, 3, -1, 5]))
+# [3, 5]
+```
+
+**Memory hooks:**
+
+- `map` → Transform
+- `zip` → Pair
+- `filter` → Select
+
+`zip()` **returns an iterator that yields tuples**, each containing corresponding elements from the input iterables.
+
+```
+names = ["Alice", "Bob", "Charlie"]
+scores = [80, 90, 75]
+
+z = zip(names, scores)
+
+print(list(z))
+# [('Alice', 80), ('Bob', 90), ('Charlie', 75)]
+```
+
+**Three things to remember:**
+
+- `zip()` returns an **iterator**, not a list.
+- Each item yielded is a **tuple**.
+- By default, `zip()` stops when the shortest iterable runs out.
+
+You can also unpack the tuples directly:
+
+```
+for name, score in zip(names, scores):
+    print(name, score)
+```
+
+**Memory hook:** `zip()` → pairs corresponding elements into tuples, lazily.
 
 ## 14. Five interview patterns to practise ⭐
 
